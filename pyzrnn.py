@@ -77,7 +77,7 @@ def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim
     weight_hh_update = np.zeros_like( weight_hh )
     weight_ih_update = np.zeros_like( weight_ih )
 
-    for train_iter in np.arange( max( len( input_series ), max_iter ) ):
+    for train_iter in np.arange( max( input_series.shape[ 0 ], max_iter ) ):
 
         # previous residual and value
         output_delta_value = list( )

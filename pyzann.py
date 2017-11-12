@@ -30,3 +30,20 @@
 # Contact me by:
 #   zsz100e@126.com
 #
+
+import numpy as np
+from pybrain.datasets import SupervisedDataSet
+from pybrain.tools.shortcuts import buildNetwork
+from pybrain.supervised.trainers import BackpropTrainer
+from pybrain.tools.xml import NetworkWriter
+from pybrain.tools.xml import NetworkReader
+from pybrain.structure import TanhLayer
+
+
+def ann_pybrain3( input, target, input_dim, hidden_dim, output_dim, max_iter ):
+    ''''''
+
+    data = SupervisedDataSet( input.shape[ 1 ], target.shape )
+
+
+    pass
