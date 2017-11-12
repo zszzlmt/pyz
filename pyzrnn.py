@@ -32,6 +32,7 @@
 #
 
 import numpy as np
+import copy
 
 def sigmoid( x ):
     """
@@ -51,25 +52,64 @@ def sigmoid_derivative( x ):
     res = x * ( 1 - x )
     return res
 
-def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim = 4, max_iter = 10000 ):
+def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim = 4, step = 0.1, max_iter = 10000 ):
     """"""
     # weight matrics
-    weight_ih = 2 * np.random.random( ( input_dim, hidden_dim ) ) - 1
     weight_ho = 2 * np.random.random( ( hidden_dim, output_dim ) ) - 1
     weight_hh = 2 * np.random.random( ( hidden_dim, hidden_dim ) ) - 1
+    weight_ih = 2 * np.random.random( ( input_dim, hidden_dim ) ) - 1
 
     # to update weight matrics
-    weight_ih_update = np.zeros_like( weight_ih )
     weight_ho_update = np.zeros_like( weight_ho )
     weight_hh_update = np.zeros_like( weight_hh )
+    weight_ih_update = np.zeros_like( weight_ih )
 
     for train_iter in np.arange( max_iter ):
 
-        # prepare the input and output
+        # previous residual and value
+        output_delta_value = list( )
+        hidden_value = list( )
+        hidden_value.append( np.zeros( hidden_dim ) )
 
-        for moment_id in np.arange( len( input_series[ train_iter ] ) ):
+        train_length = len( input_series[ train_iter ] )
 
-            moment_input = input_series[ train_iter, moment_id ]
+        for moment_id in np.arange( train_length ):
 
+            # prepare the input and output
+            moment_x = input_series[ train_iter, moment_id ]
+            moment_y = target_value[ train_iter, moment_id ]
 
+            # forward propagation
+            hidden_layer = sigmoid( np.dot( moment_x, weight_ih ) + np.dot( hidden_value[ -1 ], weight_hh ) )
+            output_layer = sigmoid( np.dot( hidden_layer, weight_ho ) )
 
+            moment_residual = moment_y - output_layer
+            output_delta_value.append( moment_residual * sigmoid_derivative( output_layer ) )
+
+            hidden_value.append( copy.deepcopy( hidden_layer ) )
+
+        hidden_delta_future = np.zeros( hidden_dim )
+
+        for moment_id in np.arrange( train_length ):
+
+            idx = train_length - moment_id - 1
+
+            moment_x = input_series[ train_iter, idx ]
+            hidden_layer = hidden_value[ -idx ]
+            hidden_layer_before = hidden_value[ -idx - 1 ]
+            output_delta = output_delta_value[ -idx ]
+            hidden_delta = ( np.dot( hidden_delta_future, weight_hh.T ) + np.dot( output_delta, weight_ho.T ) ) * sigmoid_derivative( hidden_layer )
+
+            weight_ho_update += np.dot( np.atleast_2d( hidden_layer ).T, output_delta )
+            weight_hh_update += np.dot( np.atleast_2d( hidden_layer_before ).T, hidden_delta )
+            weight_ih_update += np.dot( hidden_delta )
+
+            hidden_delta_future = hidden_delta
+
+        weight_ho += weight_ho_update * step
+        weight_hh += weight_hh_update * step
+        weight_ih += weight_ih_update * step
+
+        weight_ho_update *= 0
+        weight_hh_update *= 0
+        weight_ih_update *= 0
