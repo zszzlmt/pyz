@@ -25,7 +25,7 @@
 #   2017-11-12
 #
 # Author:
-#   ZachYeo
+#   Zach Yeo
 #
 # Contact me by:
 #   zsz100e@126.com
@@ -124,3 +124,10 @@ def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim
         weight_ho_update *= 0
         weight_hh_update *= 0
         weight_ih_update *= 0
+
+    res = { 'input_dim'     :   input_dim,  \
+            'hidden_dim'    :   hidden_dim, \
+            'output_dim'    :   output_dim, \
+            'weight_ho'     :   weight_ho,  \
+            'weight_hh'     :   weight_hh,  \
+            'weight_ih'     :   weight_ih   }
