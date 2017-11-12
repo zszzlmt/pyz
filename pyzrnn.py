@@ -53,7 +53,20 @@ def sigmoid_derivative( x ):
     return res
 
 def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim = 4, step = 0.1, max_iter = 10000 ):
-    """"""
+    """
+    recursive neural network model with 3 layer: input, hidden, and output
+    :param input_series: supposed to be a ndarry object with m * t * n dimensions. here the m is the amount of the
+    training samples, each of which has t time observation point, and n features in each observation.
+    :param target_value: supposed to be a ndarry object with m * t * k dimensions. here the m is the amount of the
+    training samples, each of which has t time observation point, and k dimension result in each observation.
+    :param input_dim: dimension in input layer
+    :param hidden_dim: dimension in hidden layer
+    :param output_dim: dimension in output layer
+    :param step: represent the speed in the learning process
+    :param max_iter: maxmum training iteration, if less than training samples, stop the training when samples are
+    used out
+    :return:
+    """
     # weight matrics
     weight_ho = 2 * np.random.random( ( hidden_dim, output_dim ) ) - 1
     weight_hh = 2 * np.random.random( ( hidden_dim, hidden_dim ) ) - 1
@@ -64,7 +77,7 @@ def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim
     weight_hh_update = np.zeros_like( weight_hh )
     weight_ih_update = np.zeros_like( weight_ih )
 
-    for train_iter in np.arange( max_iter ):
+    for train_iter in np.arange( max( len( input_series ), max_iter ) ):
 
         # previous residual and value
         output_delta_value = list( )
@@ -92,17 +105,15 @@ def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim
 
         for moment_id in np.arrange( train_length ):
 
-            idx = train_length - moment_id - 1
-
-            moment_x = input_series[ train_iter, idx ]
-            hidden_layer = hidden_value[ -idx ]
-            hidden_layer_before = hidden_value[ -idx - 1 ]
-            output_delta = output_delta_value[ -idx ]
+            moment_x = input_series[ train_iter, train_length - moment_id - 1 ]
+            hidden_layer = hidden_value[ -moment_id - 1 ]
+            hidden_layer_before = hidden_value[ -moment_id - 1 - 1 ]
+            output_delta = output_delta_value[ -moment_id - 1 ]
             hidden_delta = ( np.dot( hidden_delta_future, weight_hh.T ) + np.dot( output_delta, weight_ho.T ) ) * sigmoid_derivative( hidden_layer )
 
             weight_ho_update += np.dot( np.atleast_2d( hidden_layer ).T, output_delta )
             weight_hh_update += np.dot( np.atleast_2d( hidden_layer_before ).T, hidden_delta )
-            weight_ih_update += np.dot( hidden_delta )
+            weight_ih_update += np.dot( moment_x.T, hidden_delta )
 
             hidden_delta_future = hidden_delta
 
