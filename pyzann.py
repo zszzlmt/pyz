@@ -40,10 +40,49 @@ from pybrain.tools.xml import NetworkReader
 from pybrain.structure import TanhLayer
 
 
-def ann_pybrain3( input, target, input_dim, hidden_dim, output_dim, max_iter ):
-    ''''''
+def ann_pybrain3( input, target, input_dim, hidden_dim, output_dim, max_iter = 10000, bias = True, output_bias = True ):
+    '''
+
+    :param input: supposed to be a ndarry object with m * n dimensions. here the m is the amount of the
+    training samples, each of which has n dimension features
+    :param target: supposed to be a ndarry object with m * k dimensions, here the m is the amount of the
+    training samples, each of which is a k dimension result vector
+    :param input_dim: dimension of input layer
+    :param hidden_dim: dimension of hidden layer
+    :param output_dim: dimension of output layer
+    :param max_iter: maximum training iteration, if less than training samples, stop the training when samples are
+    used out
+    :param bias: whether or not to use bias in hidden layer
+    :param output_bias: whether or not to use bias in output layer
+    :return: pybrain neural network object, training error and validation error
+    '''
 
     data = SupervisedDataSet( input.shape[ 1 ], target.shape )
 
+    for i in np.arange( input.shape[ 0 ] ):
 
-    pass
+        data.addSample( input[ i ], target[ i ] )
+
+    model = buildNetwork( input_dim, hidden_dim, output_dim, bias = bias, outputbias = output_bias )
+    trainer = BackpropTrainer( model, data )
+    train_error, valid_error = trainer.trainUntilConvergence( maxEpochs = max_iter )
+
+    return model, train_error, valid_error
+
+def save_pybrain3( model, path ):
+    '''
+
+    :param model: pybrain neural network object that need to be saved
+    :param path: path to save the model
+    :return: none
+    '''
+    NetworkWriter.writeToFile( model, path )
+
+def load_pybrain3( path ):
+    '''
+
+    :param path: path to load the model
+    :return: pybrain neural network object loaded just now
+    '''
+    model = NetworkReader.readFrom( path )
+    return model

@@ -63,7 +63,7 @@ def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim
     :param hidden_dim: dimension in hidden layer
     :param output_dim: dimension in output layer
     :param step: represent the speed in the learning process
-    :param max_iter: maxmum training iteration, if less than training samples, stop the training when samples are
+    :param max_iter: maximum training iteration, if less than training samples, stop the training when samples are
     used out
     :return:
     """
@@ -131,3 +131,5 @@ def rnn3( input_series, target_value, input_dim = 3, hidden_dim = 10, output_dim
             'weight_ho'     :   weight_ho,  \
             'weight_hh'     :   weight_hh,  \
             'weight_ih'     :   weight_ih   }
+
+    return res
