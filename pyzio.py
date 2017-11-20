@@ -22,7 +22,7 @@
 #   2017-09-08
 #
 # Last edit at:
-#   2017-11-12
+#   2017-11-20
 #
 # Author:
 #   Zach Yeo
@@ -32,7 +32,9 @@
 #
 
 import string
-import os.paths
+import os.path
+import numpy as np
+import pandas as pd
 
 #
 # function "saveListD1":
