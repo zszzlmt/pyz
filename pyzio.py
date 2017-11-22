@@ -36,145 +36,155 @@ import os.path
 import numpy as np
 import pandas as pd
 
-#
-# function "saveListD1":
-#
-def saveListD1(l, path, append = 'w'):
+def in_csv( path ):
 
-    if l == None or len(l) == 0 or not (isinstance(l, list)):
+    if not os.path.exists( path ):
 
-        return
+        return False
 
-    fp = open(path, append)# file pointer and write only if not specified
-    if fp == None:
-
-        #err
-        return
-
-    for row in l:
-
-        fp.write(str(row))
-        fp.write('\n')
-
-    fp.close()
-
-#
-# function "loadListD1":
-#
-def loadListD1(path, type = 'string'):
-
-    if not os.path.exists(path):
-
-        #err
-        pass
-
-    elif not os.path.getsize(path):
-
-        #err
-        pass
-
-    fp = open(path, 'r')
-    if fp == None:
-
-        #err
-        pass
-
-    res = []
-
-    if type == 'string':
-
-        func = str
-
-    elif type == 'int':
-
-        func = int
-
-    elif type == 'float':
-
-        func = float
-
-    for row in fp:
-
-        res.append(func(row))
-
-    fp.close()
+    res = pd.read_csv( path )
 
     return res
 
+# #
+# # function "saveListD1":
+# #
+# def saveListD1(l, path, append = 'w'):
 #
-# function "saveListD2":
+#     if l == None or len(l) == 0 or not (isinstance(l, list)):
 #
-def saveListD2(l, path, append = 'w'):
-
-    if l == None or len(l) == 0 or not (isinstance(l, list)):
-
-        return
-
-    fp = open(path, append)# file pointer and write only if not specified
-    if fp == None:
-
-        #err
-        return
-
-    for row in l:
-
-        for col in row:
-
-            fp.write(str(col))
-            fp.write('\n')
-
-        fp.write('!-#-!\n')
-
-    fp.close()
-
+#         return
 #
-# function "loadListD2":
+#     fp = open(path, append)# file pointer and write only if not specified
+#     if fp == None:
 #
-def loadListD2(path, type = 'string'):
-
-    if not os.path.exists(path):
-
-        #err
-        pass
-
-    elif not os.path.getsize(path):
-
-        #err
-        pass
-
-    fp = open(path, 'r')
-    if fp == None:
-
-        #err
-        pass
-
-    res = []
-    tmp = []
-
-    if type == 'string':
-
-        func = str
-
-    elif type == 'int':
-
-        func = int
-
-    elif type == 'float':
-
-        func = float
-
-    for row in fp:
-
-        if row == '!-#-!\n':
-
-            res.append(tmp)
-            del tmp[:]
-
-        else:
-
-            tmp.append(func(row))
-
-
-    fp.close()
-
-    return res
+#         #err
+#         return
+#
+#     for row in l:
+#
+#         fp.write(str(row))
+#         fp.write('\n')
+#
+#     fp.close()
+#
+# #
+# # function "loadListD1":
+# #
+# def loadListD1(path, type = 'string'):
+#
+#     if not os.path.exists(path):
+#
+#         #err
+#         pass
+#
+#     elif not os.path.getsize(path):
+#
+#         #err
+#         pass
+#
+#     fp = open(path, 'r')
+#     if fp == None:
+#
+#         #err
+#         pass
+#
+#     res = []
+#
+#     if type == 'string':
+#
+#         func = str
+#
+#     elif type == 'int':
+#
+#         func = int
+#
+#     elif type == 'float':
+#
+#         func = float
+#
+#     for row in fp:
+#
+#         res.append(func(row))
+#
+#     fp.close()
+#
+#     return res
+#
+# #
+# # function "saveListD2":
+# #
+# def saveListD2(l, path, append = 'w'):
+#
+#     if l == None or len(l) == 0 or not (isinstance(l, list)):
+#
+#         return
+#
+#     fp = open(path, append)# file pointer and write only if not specified
+#     if fp == None:
+#
+#         #err
+#         return
+#
+#     for row in l:
+#
+#         for col in row:
+#
+#             fp.write(str(col))
+#             fp.write('\n')
+#
+#         fp.write('!-#-!\n')
+#
+#     fp.close()
+#
+# #
+# # function "loadListD2":
+# #
+# def loadListD2(path, type = 'string'):
+#
+#     if not os.path.exists(path):
+#
+#         #err
+#         pass
+#
+#     elif not os.path.getsize(path):
+#
+#         #err
+#         pass
+#
+#     fp = open(path, 'r')
+#     if fp == None:
+#
+#         #err
+#         pass
+#
+#     res = []
+#     tmp = []
+#
+#     if type == 'string':
+#
+#         func = str
+#
+#     elif type == 'int':
+#
+#         func = int
+#
+#     elif type == 'float':
+#
+#         func = float
+#
+#     for row in fp:
+#
+#         if row == '!-#-!\n':
+#
+#             res.append(tmp)
+#             del tmp[:]
+#
+#         else:
+#
+#             tmp.append(func(row))
+#
+#
+#     fp.close()
+#
+#     return res

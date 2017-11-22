@@ -22,7 +22,7 @@
 #   2017-11-21
 #
 # Last edit at:
-#   2017-11-21
+#   2017-11-22
 #
 # Author:
 #   Zach Yeo
@@ -37,6 +37,7 @@ import pandas as pd
 def _create_C1( transaction_set ):
     ''''''
     res = []
+
     for transaction in transaction_set:
 
         for item in transaction:
@@ -48,7 +49,7 @@ def _create_C1( transaction_set ):
     res.sort( )
     return map( frozenset, res )
 
-def _calcu_support( transaction_set, candidates, thres_support ):
+def _calcu_support( transaction_set, candidates, thres_support = 0.5 ):
     ''''''
     res_item = [ ]
     res_support = { }
@@ -73,4 +74,46 @@ def _calcu_support( transaction_set, candidates, thres_support ):
             res_item.append( key )
 
     return res_item, res_support
+
+def _calcu_Ck( Lk_minus ):
+    ''''''
+    Lk = [ ]
+    l = len( Lk_minus )
+    k = len( Lk_minus[ 0 ] ) + 1
+
+    for item_set_i in np.arange( l ):
+
+        pre_set_i = list( Lk_minus[ item_set_i ] ).sort( )[ : k - 2 ]
+
+        for item_set_j in np.arange( item_set_i + 1 , l ):
+
+            pre_set_j = list( Lk_minus[ item_set_j ] ).sort( )[ : k - 2 ]
+
+            if pre_set_i == pre_set_j:
+
+                Lk.append( Lk_minus[ item_set_i ] | Lk_minus[ item_set_j ] )
+
+    return Lk
+
+def apriori( transactions, thres_support = 0.5, thres_confidence = 0.5 ):
+    ''''''
+    transaction_set = map( set, transactions )
+
+    C1 = _create_C1(transactions)
+    L1, support_info = _calcu_support( transaction_set, C1, thres_support )
+    L = [ L1 ]
+
+    while len( L[ -1 ] ) > 0:
+
+        Ck = _calcu_Ck( L[ -1 ] )
+        Lk, support_k = _calcu_support( transaction_set, Ck, thres_support )
+
+        if len( Lk ) == 0:
+
+            break
+
+        support_info.update( support_k )
+        L.append( Lk )
+
+    return L, support_info
 
