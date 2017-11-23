@@ -35,6 +35,8 @@ import numpy as np
 import pandas as pd
 import pyzio as io
 import copy
+import siemens_predict
+import pyzapriori
 
 def _cut_tail( input_series, tail_length = 6 ):
 
@@ -105,9 +107,99 @@ if __name__ == '__main__':
     vib_group_y = _group( vib, 'y_VALUE', 'TIME' )
     vib_group_z = _group( vib, 'z_VALUE', 'TIME' )
 
-    del current
-    del distance
-    del human
-    del vib
+    tmp_dict = {'x': vib_group_x, 'y': vib_group_y, 'z': vib_group_z}
+    tmp_df = pd.DataFrame(tmp_dict, index = vib[ 'TIME' ].unique( ) )
 
-    
+    del vib
+    del human
+    del distance
+    del current
+
+    pre_res = siemens_predict.predict( tmp_df, human_group, distance_group, current_group )
+
+    # vib     human distance  current
+    # 3       2     2         3
+    # 0 1 2 | 0 1 | 0 1     | 0 1 2
+    # 1 2 3 | 4 5 | 6 7     | 8 9 10
+
+    apriori_input = [ ]
+    tmp = [ ]
+
+    for i in pre_res:
+
+        if i[ 0 ] == 0:
+
+            tmp.append( 1 )
+
+        elif i[ 0 ] == 1:
+
+            tmp.append( 2 )
+
+        else:
+
+            tmp.append( 3 )
+
+        if i[ 1 ] == 0:
+
+            tmp.append( 4 )
+
+        else:
+
+            tmp.append( 5 )
+
+        if i[ 2 ] == 0:
+
+            tmp.append( 6 )
+
+        else:
+
+            tmp.append( 7 )
+
+        if i[ 3 ] == 0:
+
+            tmp.append( 8 )
+
+        elif i[ 3 ] == 1:
+
+            tmp.append( 9 )
+
+        else:
+
+            tmp.append( 10 )
+
+        apriori_input.append( tmp )
+        tmp = [ ]
+
+    print len( pre_res )
+    print len( apriori_input )
+
+    set_pre_res = set( )
+    set_apriori_input = set( )
+
+    for i in pre_res:
+
+        if tuple( i ) not in set_pre_res:
+
+            set_pre_res.add( tuple( i ) )
+
+    for i in apriori_input:
+
+        if tuple( i ) not in set_apriori_input:
+
+            set_apriori_input.add( tuple( i ) )
+
+    print set_pre_res, len( set_pre_res )
+    print set_apriori_input, len( set_apriori_input )
+
+    res, support_info = pyzapriori.apriori( apriori_input )
+
+    frequent_item_cnt = 0
+    for Lk in res:
+
+        frequent_item_cnt += len( Lk )
+
+    print len( res ), frequent_item_cnt
+    print len( support_info )
+
+    print res
+    print support_info

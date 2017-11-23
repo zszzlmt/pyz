@@ -59,7 +59,9 @@ def _calcu_support( transaction_set, candidates, thres_support = 0.5 ):
 
         for item in candidates:
 
-            bin_dict[ item ] = bin_dict.get( item, 0 ) + 1
+            if item.issubset( transaction ):
+
+                bin_dict[ item ] = bin_dict.get( item, 0 ) + 1
 
     N_transactions = float( len( transaction_set ) )
 
@@ -67,10 +69,9 @@ def _calcu_support( transaction_set, candidates, thres_support = 0.5 ):
 
         support = bin_dict[ key ] / N_transactions
 
-        res_support[ key ] = support
-
         if support >= thres_support:
 
+            res_support[key] = support
             res_item.append( key )
 
     return res_item, res_support
@@ -83,11 +84,11 @@ def _calcu_Ck( Lk_minus ):
 
     for item_set_i in np.arange( l ):
 
-        pre_set_i = list( Lk_minus[ item_set_i ] ).sort( )[ : k - 2 ]
+        pre_set_i = sorted( list( Lk_minus[ item_set_i ] ) )[ : k - 2 ]
 
         for item_set_j in np.arange( item_set_i + 1 , l ):
 
-            pre_set_j = list( Lk_minus[ item_set_j ] ).sort( )[ : k - 2 ]
+            pre_set_j = sorted( list( Lk_minus[ item_set_j ] ) )[ : k - 2 ]
 
             if pre_set_i == pre_set_j:
 
@@ -95,7 +96,7 @@ def _calcu_Ck( Lk_minus ):
 
     return Lk
 
-def apriori( transactions, thres_support = 0.5, thres_confidence = 0.5 ):
+def apriori( transactions, thres_support = 0.7, thres_confidence = 0.5 ):
     ''''''
     transaction_set = map( set, transactions )
 
