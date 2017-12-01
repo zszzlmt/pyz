@@ -49,7 +49,13 @@ def _cut_tail( input_series, tail_length = 6 ):
     return res
 
 def _group( input_df, target_index, group_index ):
+    '''
 
+    :param input_df:
+    :param target_index:
+    :param group_index:
+    :return:
+    '''
     res = [ ]
     tmp = [ ]
     l = len( input_df )
