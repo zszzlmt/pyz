@@ -37,14 +37,21 @@ import numpy as np
 import pandas as pd
 
 def in_csv( path ):
+    '''
 
+    :param path:
+    :return:
+    '''
     if not os.path.exists( path ):
-
         return False
-
     res = pd.read_csv( path )
-
     return res
+
+def out_csv( target, path, name = 'res' ):
+    ''''''
+    tmp_dict = { name: target }
+    res_df = pd.DataFrame( tmp_dict )
+    res_df.to_csv( path )
 
 # #
 # # function "saveListD1":
