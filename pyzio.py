@@ -38,7 +38,7 @@ import pandas as pd
 
 def in_csv( path ):
     '''
-
+    read in a csv format file, and return the pandas.DataFrame object
     :param path:
     :return:
     '''
@@ -48,7 +48,14 @@ def in_csv( path ):
     return res
 
 def out_csv( target, path, name = 'res' ):
-    ''''''
+    '''
+    save the target Series/list/ndarray with the csv format and path specified
+    if no column name is specified, 'res' is default one
+    :param target:
+    :param path:
+    :param name:
+    :return:
+    '''
     tmp_dict = { name: target }
     res_df = pd.DataFrame( tmp_dict )
     res_df.to_csv( path )
