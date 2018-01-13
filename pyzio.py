@@ -22,7 +22,7 @@
 #   2017-09-08
 #
 # Last edit at:
-#   2017-11-20
+#   2017-11-24
 #
 # Author:
 #   Zach Yeo
@@ -44,10 +44,19 @@ def in_csv( path ):
     '''
     if not os.path.exists( path ):
         return False
-    res = pd.read_csv( path )
+    res = pd.read_csv( path, index_col = False )
     return res
 
-def out_csv( target, path, name = 'res' ):
+def out_df_csv( df, path ):
+    '''
+
+    :param df:
+    :param path:
+    :return:
+    '''
+    df.to_csv( path, index = False )
+
+def out_sln_csv( target, path, name = 'value' ):
     '''
     save the target Series/list/ndarray with the csv format and path specified
     if no column name is specified, 'res' is default one
